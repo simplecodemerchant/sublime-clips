@@ -557,6 +557,39 @@ class UniqueRows(sublime_plugin.TextCommand):
         except Exception as e:
             print (e)
 
+class HottextRows(sublime_plugin.TextCommand):
+    def run (self,edit):
+        try:
+            sels = self.view.sel()
+
+            for sel in sels:
+                printPage = u""
+                input = self.view.substr(sel).strip()
+                input = fixUniCode(input)
+                input = re.sub(r"\n([\s]*)\n", r"\n", input)
+                rows = input.split();
+                label = 1
+
+                for row in rows:
+                    if row.startswith('['):
+                        found = re.search(r"\[([A-Za-z0-9_]+)\]", row)
+                        extra = found.group(1)
+                        row = re.sub(r"\[([A-Za-z0-9_]+)\]", "", row)
+                        printPage += u"  <row label=\"r{label}\" hottext:prefix_html=\"&lt;{extra}>\">{content}</row>\n".format(label=label, extra=extra, content=row)
+                    elif row.endswith(']'):
+                        found = re.search(r"\[([A-Za-z0-9_]+)\]", row)
+                        extra = found.group(1)
+                        row = re.sub(r"\[([A-Za-z0-9_]+)\]", "", row)
+                        printPage += u"  <row label=\"r{label}\" hottext:suffix_html=\"&lt;/{extra}>\">{content}</row>\n".format(label=label, extra=extra, content=row)
+                    else:
+                        printPage += u"  <row label=\"r{label}\">{content}</row>\n".format(label=label, content=row)
+
+                    label += 1
+
+            self.view.replace(edit,sel, printPage)
+        except Exception as e:
+            print(e)
+
 
 # class UniqueSortedRows(sublime_plugin.TextCommand):
 #     def run (self,edit):
@@ -564,7 +597,7 @@ class UniqueRows(sublime_plugin.TextCommand):
 #             sels = self.view.sel()
 
 #             for sel in sels:
-#                 printPage = ""
+#                 printPage = u""
 #                 uniSet = []
 #                 input = self.view.substr(sel).strip()
 #                 input = input.split('\n')
@@ -579,7 +612,7 @@ class UniqueRows(sublime_plugin.TextCommand):
 
 #             self.view.replace(edit,sel, printPage)
 #         except Exception as e:
-#             print e
+#             print(e)
 
 
 #Use as template

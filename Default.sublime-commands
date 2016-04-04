@@ -149,6 +149,10 @@
     {
       "caption": "MM::Sorted Unique Rows",
       "command": "unique_sorted_rows"
-    }
+    },
+    {
+      "caption": "MM::Hottext Rows",
+      "command": "hottext_rows"
+    },
 ]       
 

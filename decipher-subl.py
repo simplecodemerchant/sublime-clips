@@ -1304,20 +1304,16 @@ class makeLoopBlockCommand(sublime_plugin.TextCommand):
                 input = re.sub(r'<(radio|checkbox|text|textarea|block|number|float|select|html)(.*) label="([^"]*)"',r'<\1\2 label="\3_[loopvar: label]"', input)
                 
                 printPage = """
-<loop label="" vars="" title=" " suspend="0">
+<loop label="" vars="">
 
-    <block label="">
+<block label="">
 
-    %s
+%s
 
-    </block>
-    <looprow label="" cond="">
-        <loopvar name=""></loopvar>
-    </looprow>
+</block>
+<looprow label="" cond=""><loopvar name=""></loopvar></looprow>
 
-</loop>
-
-            """ % input
+</loop>""" % input
 
                 self.view.replace(edit,sel, printPage)
         except Exception as e:
