@@ -50,7 +50,7 @@ def tidyQuestionInput(input):
     return [input, label, title]
 
 def tidySurveyInput(input):
-    input = input.encode()
+    # input = input.encode()
     input = re.sub("\t+", " ", input)
     input = re.sub("\n +\n", "\n\n", input)
     funkyChars = [(chr(133),'...'),(chr(145),"'"),(chr(146),"'"),(chr(147),'"'),(chr(148),'"'),(chr(151),'--')]
@@ -60,28 +60,29 @@ def tidySurveyInput(input):
     input = input.replace("&", "&amp;")
     input = input.replace("&amp;#", "&#")
     return input
+
 # normal survey return array header & footer
 def newSurvey():
     HEADER = """<survey name="Survey"
-                 alt=""
-                 autosave="0"
-                 extraVariables="source,list,url,record,ipAddress,userAgent,decLang"
-                 compat="127"
-                 builderCompatible="1"
-                 secure="0"
-                 setup="time,term,quota,decLang"
-                 ss:disableBackButton="1"
-                 mobile="compat"
-                 mobileDevices="smartphone,tablet,featurephone,desktop"
-                 state="testing">
+    alt=""
+    autosave="0"
+    extraVariables="source,list,url,record,ipAddress,userAgent,decLang"
+    compat="132"
+    builderCompatible="1"
+    secure="0"
+    setup="time,term,quota,decLang"
+    ss:disableBackButton="1"
+    mobile="compat"
+    mobileDevices="smartphone,tablet,featurephone,desktop"
+    state="testing">
 
-                <samplesources default="0">
-                  <samplesource list="0" title="default">
-                    <exit cond="qualified"><b>Thanks again for completing the survey!<br/><br/>Your feedback and quick response to this survey are greatly appreciated.</b></exit>
-                    <exit cond="terminated"><b>Thank you for your input!</b></exit>
-                    <exit cond="overquota"><b>Thank you for your input!</b></exit>
-                  </samplesource>
-                </samplesources>"""
+    <samplesources default="0">
+      <samplesource list="0" title="default">
+        <exit cond="qualified"><b>Thanks again for completing the survey!<br/><br/>Your feedback and quick response to this survey are greatly appreciated.</b></exit>
+        <exit cond="terminated"><b>Thank you for your input!</b></exit>
+        <exit cond="overquota"><b>Thank you for your input!</b></exit>
+      </samplesource>
+    </samplesources>"""
     FOOTER = """<marker name="qualified"/></survey>"""
 
     return[HEADER,FOOTER]
@@ -398,7 +399,7 @@ class makeSurveyCommand(sublime_plugin.TextCommand):
             sels = self.view.sel()
             input = ''
             docType =  returnContext(self)
-            
+
             for sel in sels:
                 printPage = ''
                 input = self.view.substr(sel).strip()
@@ -406,11 +407,11 @@ class makeSurveyCommand(sublime_plugin.TextCommand):
                 #print input
                 headerFooter =[]
                 ### different variables dependant on survey type
-                
+
                 if docType =='CMB':
                     headerFooter = newSurveyCMB()
                     printPage = "%s\n\n%s\n\n%s" % (headerFooter[0], input, headerFooter[1])
-                    
+
                     headerFooter =[]
                 elif docType =='EBA':
                     print ('ebay found')
@@ -454,7 +455,7 @@ class makeRadioCommand(sublime_plugin.TextCommand):
             sels = self.view.sel()
             input = ''
             docType =  returnContext(self)
-            
+
             for sel in sels:
                 printPage = ''
                 input = self.view.substr(sel)
@@ -467,7 +468,19 @@ class makeRadioCommand(sublime_plugin.TextCommand):
                     colCount = len(input.split("<col"))-1
 
                 output = input
+                print(output)
                 #test for and adjust comment for 2d question
+                if output.strip() == '':
+                    printpage = printPage = """
+<radio label=\"%s\" where="execute">
+  <title>%s</title>
+  <row label="r1" value="1">True</row>
+  <row label="r0" value="0">False</row>
+</radio>
+<suspend/>""" % (label.strip(), title.strip())
+                    return self.view.replace(edit,sel, printpage)
+
+
                 if "<comment>" not in input:
                     if ("<row" in output) and ("<col" in output):
                         comment = "<comment>Select one in each row</comment>\n" if docType != 'SRG' else  "<comment>Please select one in each row</comment>\n"
@@ -645,9 +658,9 @@ class makeCheckboxCommand(sublime_plugin.TextCommand):
                 inputLabelTitle = tidyQuestionInput(input)
                 input = inputLabelTitle[0]
                 label = inputLabelTitle[1]
-                title = inputLabelTitle[2]    
+                title = inputLabelTitle[2]
 
-                
+
                 #checkbox specific
                 rowCount = len(input.split("<row"))-1
                 colCount = len(input.split("<col"))-1
@@ -865,7 +878,7 @@ class makeNumberCommand(sublime_plugin.TextCommand):
                         printPage = "<number label=\"%s\" size=\"3\" optional=\"0\">\n  <title>%s</title>\n  %s%s</number>\n<suspend/>" % (label.strip(), title.strip(), comment, output)
                     else:
                         printPage = "<number label=\"%s\" size=\"3\" optional=\"0\">\n  <title>%s</title>\n%s</number>\n<suspend/>" % (label.strip(), title.strip(), output)
-                
+
                 self.view.replace(edit,sel, printPage)
         except Exception as e:
             print (e)
@@ -969,7 +982,7 @@ class makeRowrCommand(sublime_plugin.TextCommand):
                     input[x] = re.sub("^[a-zA-Z0-9]{1,2}[\.:\)][ \t]+", "", input[x])
 
                 for x in input:
-                    
+
                     if "other" in input[count-1].strip().lower() and "specify" in input[count-1].strip().lower():
                       input[count-1] = input[count-1].replace("_", "")
                       extra=' open=\"1\" openSize=\"'+openSize+'\" randomize=\"0\"'
@@ -1006,7 +1019,7 @@ class makeRowsMatchLabelCommand(sublime_plugin.TextCommand):
                 for line in input:
                      line = line.strip()
                      #SPLIT ON WHITESPACE -- REMOVE LEADING AND TRAILING WS
-                     parts = re.split(r"\s",line,1) 
+                     parts = re.split(r"\s",line,1)
 
                      #GET RID OF EXTRA SPACES
                      ordinal= parts[0].strip()
@@ -1059,7 +1072,7 @@ class makeRowsMatchValuesCommand(sublime_plugin.TextCommand):
                 for line in input:
                     line = line.strip()
                     #SPLIT ON WHITESPACE -- REMOVE LEADING AND TRAILING WS
-                    parts = re.split(r"\s",line,1) 
+                    parts = re.split(r"\s",line,1)
 
                     #GET RID OF EXTRA SPACES
                     ordinal= parts[0].strip()
@@ -1145,7 +1158,7 @@ class makeColsMatchLabelCommand(sublime_plugin.TextCommand):
                 for line in input:
                      line = line.strip()
                      #SPLIT ON WHITESPACE -- REMOVE LEADING AND TRAILING WS
-                     parts = re.split(r"\s",line,1) 
+                     parts = re.split(r"\s",line,1)
 
                      #GET RID OF EXTRA SPACES
                      ordinal= parts[0].strip()
@@ -1153,7 +1166,7 @@ class makeColsMatchLabelCommand(sublime_plugin.TextCommand):
                      ordinal= ordinal.rstrip(')')
 
                      #GET RID OF EXTRA SPACES
-                     if len(parts) == 2: 
+                     if len(parts) == 2:
                        content = parts[1].strip()
 
                      extra=""
@@ -1197,14 +1210,14 @@ class makeColsMatchValueCommand(sublime_plugin.TextCommand):
                 for line in input:
                      line = line.strip()
                      #SPLIT ON WHITESPACE -- REMOVE LEADING AND TRAILING WS
-                     parts = re.split(r"\s",line,1) 
+                     parts = re.split(r"\s",line,1)
 
                      #GET RID OF EXTRA SPACES
                      ordinal= parts[0].strip()
                      ordinal= ordinal.rstrip('.')
                      ordinal= ordinal.rstrip(')')
 
-                     #GET RID OF EXTRA SPACES 
+                     #GET RID OF EXTRA SPACES
                      content = parts[1].strip()
 
                      extra=""
@@ -1302,7 +1315,7 @@ class makeLoopBlockCommand(sublime_plugin.TextCommand):
                 printPage = ''
                 input = self.view.substr(sel).strip()
                 input = re.sub(r'<(radio|checkbox|text|textarea|block|number|float|select|html)(.*) label="([^"]*)"',r'<\1\2 label="\3_[loopvar: label]"', input)
-                
+
                 printPage = """
 <loop label="" vars="">
 
@@ -1325,9 +1338,9 @@ class makeSwitchCommand(sublime_plugin.TextCommand):
         try:
             sels = self.view.sel()
             for sel in sels:
-                
+
                 vrange = self.view.substr(sel).strip("\n").split("\n")
-               
+
                 for i in range(len(vrange)):
 
                     if "<row" in vrange[i]:

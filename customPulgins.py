@@ -1,4 +1,11 @@
-import sublime_plugin, re
+import sublime_plugin, re, sublime
+import sys
+import os
+
+sys.path.append(os.path.abspath('/usr/local/lib/python2.7/dist-packages'))
+
+import xmltodict
+
 
 def fixUniCode(input):
     input = input.replace(u"\u2019", "'").replace(u"\u2018", "'").replace(u"\u201C", "\"").replace(u"\u201D", "\"").replace(u"\u2014", '&amp;mdash;').replace(u"\u2013", '&amp;ndash;')
@@ -278,11 +285,13 @@ def make_original_question(self, qType, qLabel, qComment, qItems, qTitle):
 <"""+qType+""" label=\""""+qLabel+"""\" where=\"execute\">
 """+qTitle+qComment+"""
 """+qItems+"""
-</"""+qType+""">"""
+</"""+qType+""">
+<suspend/>"""
     return question
 
 
 class SplitQuestionCommand(sublime_plugin.TextCommand):
+
     def run(self, edit):
         splNums = 0
         # qHead = ''
@@ -304,12 +313,10 @@ class SplitQuestionCommand(sublime_plugin.TextCommand):
 
             for x in nLs:
                 questionLs.append(self.view.substr(x).strip())
-                # question += self.view.substr(x) + "\n"
-                # question = re.sub(r'\[([0-9])\]', '', question)
 
         for line in questionLs:
             splNum = re.search(r'^\[([0-9]{1,2})\]', line.strip())
-            qT = re.search(r'^(?:<)(radio|select|checkbox|number)(?:.*)label=(?:\'|\")([a-zA-Z0-9]\w+)(?:\'|\")', line.strip())
+            qT = re.search(r'^(?:<)(radio|select|checkbox|number)(?:.*)label=(?:\'|\")([a-zA-Z0-9]\w+)(?:\'|\")(.*)(?:>)', line.strip())
             qCom = re.search(r'<comment>(.*)</comment>', line.strip())
             qCols = re.search(r'^(?:<)(col)(.*)', line.strip())
             qChoices = re.search(r'^(?:<)(choice)(.*)', line.strip())
@@ -342,43 +349,6 @@ class SplitQuestionCommand(sublime_plugin.TextCommand):
         questionMain = makeSplitQuestions + makeMergeQuestion + makeOriginalQuestion
 
         self.view.replace(edit, sel, questionMain)
-
-# class MakeSpecialColsCommand(sublime_plugin.TextCommand):
-#     def run (self,edit):
-#         try:
-
-#             sels = self.view.sel()
-#             input = ''
-#             for sel in sels:
-#                 printPage = u''
-#                 input = self.view.substr(sel)
-#                 input = re.sub(r"\t+", " ", input)
-#                 #CLEAN UP THE EXTRA LINE BREAKS
-#                 input = re.sub(r"\n{2,}", "\n", input)
-#                 input = fixUniCode(input)
-#                 input = input.strip().split("\n")
-#                 #start from output = to fill this class
-
-#                 for x in range(0,len(input)):
-#                     input[x] = re.sub("^[a-zA-Z0-9]{1,2}[\.:\)][ \t]+", "\n", input[x])
-#                     input[x] = re.sub(r"^([0-9]{1,3})[\t\s.:)]([a-zA-Z0-9\s\'\"]+)$", r"\2<br/> \1", input[x])
-
-#                 count = 0
-
-#                 for x in input:
-#                     if "other" in input[count].strip().lower() and "specify" in input[count].strip().lower():
-#                         input[count] = input[count].strip().replace("_", "")
-#                         extra=' open=\"1\" openSize=\"10\" randomize=\"0\"'
-#                         printPage += u"  <col label=\"c{label}\"{extra}>{content}</col>\n".format(label=str(count+1), extra=extra, content=input[count].strip())
-#                         count += 1
-#                     else:
-#                         extra = ''
-#                         printPage += u"  <col label=\"c{label}\"{extra}>{content}</col>\n".format(label=str(count+1), extra=extra, content=input[count].strip())
-#                         count += 1
-
-#                 self.view.replace(edit,sel, printPage)
-#         except Exception as e:
-#             print (e)
 
 class MakeListCommand(sublime_plugin.TextCommand):
     def run (self,edit):
@@ -416,7 +386,7 @@ class CleanCommand(sublime_plugin.TextCommand):
 
             for sel in sels:
                 input = self.view.substr(sel).strip()
-                input = re.sub(r"(<.*>\[.*\]<.*>|\[.*\])", "", input)
+                input = re.sub(r"(<.*?>\[.*?\]<.*?>|\[.*?\])", "", input)
                 input = fixUniCode(input)
 
                 self.view.replace(edit,sel, input)
@@ -567,7 +537,7 @@ class HottextRows(sublime_plugin.TextCommand):
                 input = self.view.substr(sel).strip()
                 input = fixUniCode(input)
                 input = re.sub(r"\n([\s]*)\n", r"\n", input)
-                rows = input.split();
+                rows = input.split()
                 label = 1
 
                 for row in rows:
@@ -591,43 +561,76 @@ class HottextRows(sublime_plugin.TextCommand):
             print(e)
 
 
-# class UniqueSortedRows(sublime_plugin.TextCommand):
+class makeCustomComment(sublime_plugin.TextCommand):
+    def run (self,edit):
+        try:
+            sels = self.view.sel()
+
+            for sel in sels:
+                printPage = u""
+                input = self.view.substr(sel).strip()
+                input = fixUniCode(input)
+                input = re.sub(r"\n+", r"\n", input)
+                input = re.sub(r"(^(\()|(\.|\))+$)", r"", input)
+                input = "\n<comment>" + str(input) + "</comment>"
+
+            self.view.replace(edit,sel, input)
+        except Exception as e:
+            print(e)
+
+class InsertColumns(sublime_plugin.TextCommand):
+    def run(self, edit):
+        try:
+            sels = self.view.sel()
+
+            for sel in sels:
+                printPage = u""
+                input = self.view.substr(sel).strip()
+                input = fixUniCode(input)
+                input = re.sub(r"\n([\s]*)\n", r"\n", input)
+                input = input.split('\n')
+                x = input[0].strip(']').strip('[').split('-')
+                print(x)
+                ranges = [int(x[0]), int(x[1])+1]
+                for col in range(ranges[0], ranges[1]):
+                    if col == int(x[0]):
+                        printPage += u"  <col label=\"c{label}\" value=\"{label}\">{content}<br/> {label}</col>\n".format(label=col, content=input[1])
+                    elif col == int(x[1]):
+                        printPage += u"  <col label=\"c{label}\" value=\"{label}\">{content}<br/> {label}</col>".format(label=col, content=input[2])
+                    else:
+                        printPage += u"  <col label=\"c{label}\" value=\"{label}\">{label}</col>\n".format(label=col)
+
+                self.view.replace(edit,sel, printPage)
+        except Exception as e:
+            print(e)
+
+class Custom(sublime_plugin.TextCommand):
+    def run (self,edit):
+        try: 
+
+            for sel in self.view.sel():
+                input = self.view.substr(sel).strip()
+                input = fixUniCode(input)
+                input = xmltodict.parse(input)
+                print(input)
+
+
+            # self.view.replace(edit,sel, printPage)
+        except Exception as e:
+            print(e)
+
+# class Custom(sublime_plugin.TextCommand):
 #     def run (self,edit):
 #         try:
 #             sels = self.view.sel()
 
 #             for sel in sels:
 #                 printPage = u""
-#                 uniSet = []
 #                 input = self.view.substr(sel).strip()
-#                 input = input.split('\n')
-#                 for x in input:
-#                     if x not in uniSet:
-#                         x = x.strip()
-#                         uniSet.append(x)
+#                 input = fixUniCode(input)
+#                 input = re.sub(r"\n([\s]*)\n", r"\n", input)
 
-#                 for z in uniSet:
-#                     printPage += z + '\n'
-                
 
 #             self.view.replace(edit,sel, printPage)
 #         except Exception as e:
 #             print(e)
-
-
-#Use as template
-#test2
-# class CustomCommand(sublime_plugin.TextCommand):
-#     def run (self,edit):
-#         try:
-#             sels = self.view.sel()
-
-#             for sel in sels:
-#                 printPage = ""
-#                 input = self.view.substr(sel).strip()
-#                 input = fixUniCode(input)
-#                 input =  make_labels(input, "r", '\n')
-
-#             self.view.replace(edit,sel, printPage)
-#         except Exception as e:
-#             print e

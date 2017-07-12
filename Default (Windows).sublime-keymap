@@ -125,13 +125,6 @@
         ]
     },
     { 
-        "keys": ["ctrl+6"], "command": "make_loop_block", "context": [
-            {
-              "key": "selector", "operator": "equal", "operand":"text.xml"
-            }
-        ]
-    },
-    { 
         "keys": ["ctrl+shift+h"], "command": "make_comment", "context": [
             {
               "key": "selector", "operator": "equal", "operand":"text.xml"
@@ -165,5 +158,28 @@
               "key": "selector", "operator": "equal", "operand":"text.xml"
             }
         ]
-    }
+    },
+    { 
+        "keys": ["ctrl+6"], "command": "make_custom_comment", "context": [
+            {
+              "key": "selector", "operator": "equal", "operand":"text.xml"
+            }
+        ]
+    },
+    {   
+        "keys": ["shift+alt+b"], 
+        "command": "insert_snippet", 
+        "args": 
+            {
+            "name": "Packages/sublime-clips/shortcuts/BoldText.sublime-snippet"
+        } 
+    },
+    {   
+        "keys": ["shift+alt+u"], 
+        "command": "insert_snippet", 
+        "args": 
+            {
+            "name": "Packages/sublime-clips/shortcuts/UnderlineText.sublime-snippet"
+        } 
+    },
 ]

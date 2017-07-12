@@ -147,12 +147,24 @@
       "command": "unique_rows"
     },
     {
-      "caption": "MM::Sorted Unique Rows",
-      "command": "unique_sorted_rows"
-    },
-    {
       "caption": "MM::Hottext Rows",
       "command": "hottext_rows"
+    },
+    {
+      "caption": "MM::Instruction Comment",
+      "command": "make_custom_comment"
+    },
+    {
+      "caption": "MM::Insert Columns",
+      "command": "insert_columns"
+    },
+    {
+      "caption": "MM::Bold Text",
+      "command": "bold_text"
+    },
+    {
+      "caption": "MM::Custom Test",
+      "command": "custom"
     },
 ]       
 

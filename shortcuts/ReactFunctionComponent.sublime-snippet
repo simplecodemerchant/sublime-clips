@@ -1,0 +1,17 @@
+<snippet>
+	<content><![CDATA[
+import React from 'react';
+
+const ${1:Component Name} = (props) => {
+	return (
+		${0}
+	);
+};
+
+export default ${1:Component Name};
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>reactfunction</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>
