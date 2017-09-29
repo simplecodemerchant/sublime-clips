@@ -2,9 +2,6 @@ import sublime_plugin, re, sublime
 import sys
 import os
 
-sys.path.append(os.path.abspath('/usr/local/lib/python2.7/dist-packages'))
-
-import xmltodict
 
 
 def fixUniCode(input):
@@ -31,7 +28,7 @@ def make_labels(input, itemOP, splitter):
         rowAA = re.search(r"^([a-zA-Z0-9]{1,2})(?:[.:)])(?:[\s\t]+?)(.+)$", x.strip())
         #For rating question columns
         rowCC = re.search(r"^([0-9]{1,2})$", x.strip())
-        #No label found. Just start labeling at 1 and increment 
+        #No label found. Just start labeling at 1 and increment
         rowZZ = re.search(r"^(.*)$", x.strip())
 
         if itemOP =="c":
@@ -362,7 +359,7 @@ class MakeListCommand(sublime_plugin.TextCommand):
                 input = re.sub(r"^\[[a-zA-Z0-9]+\]",'', input)
 
                 if tag is not None:
-                    lType = str(tag.group(1))                    
+                    lType = str(tag.group(1))
                 else:
                     lType = u"ul"
 
@@ -441,12 +438,12 @@ class AutoSumCommand(sublime_plugin.TextCommand):
                             prefill = "autosum:prefill=\"{0}\"".format(aS.group(5))
                             items.append(prefill)
                         elif i == 5:
-                            showRemaining = "autosum:showRemaining=\"{0}\"".format(aS.group(6)) 
+                            showRemaining = "autosum:showRemaining=\"{0}\"".format(aS.group(6))
                             items.append(showRemaining)
                     i += 1
 
                 for y in items:
-                    printPage += " " + y 
+                    printPage += " " + y
 
                 self.view.replace(edit,sel, printPage)
         except Exception as e:
@@ -521,7 +518,7 @@ class UniqueRows(sublime_plugin.TextCommand):
                     uniSet.add(x)
                 for z in uniSet:
                     printPage += z + '\n'
-                
+
 
             self.view.replace(edit,sel, printPage)
         except Exception as e:
@@ -604,20 +601,20 @@ class InsertColumns(sublime_plugin.TextCommand):
         except Exception as e:
             print(e)
 
-class Custom(sublime_plugin.TextCommand):
-    def run (self,edit):
-        try: 
+# class Custom(sublime_plugin.TextCommand):
+#     def run (self,edit):
+#         try:
 
-            for sel in self.view.sel():
-                input = self.view.substr(sel).strip()
-                input = fixUniCode(input)
-                input = xmltodict.parse(input)
-                print(input)
+#             for sel in self.view.sel():
+#                 input = self.view.substr(sel).strip()
+#                 input = fixUniCode(input)
+#                 input = xmltodict.parse(input)
+#                 print(input)
 
 
-            # self.view.replace(edit,sel, printPage)
-        except Exception as e:
-            print(e)
+#             # self.view.replace(edit,sel, printPage)
+#         except Exception as e:
+#             print(e)
 
 # class Custom(sublime_plugin.TextCommand):
 #     def run (self,edit):
