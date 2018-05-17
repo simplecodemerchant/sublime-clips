@@ -104,7 +104,7 @@ def make_labels(input, itemOP, splitter):
         extra = ""
 
         if spec:
-            extra=" open=\"1\" openSize=\"10\" randomize=\"0\""
+            extra=" open=\"1\" openSize=\"20\" randomize=\"0\""
 
         surveyItems.append([rowLabel, rowText, extra, rowNum])
     return surveyItems
@@ -125,7 +125,7 @@ class MakeHtmlCommand(sublime_plugin.TextCommand):
                         inputPage += "<br/><br/>\n"
                     else:
                         inputPage += x + "\n"
-                printPage = """<html label=\"\" where=\"survey\">
+                printPage = """<html\n  label=\"\"\n  where=\"survey\">
 %s
 </html>""" % inputPage
 
@@ -601,20 +601,6 @@ class InsertColumns(sublime_plugin.TextCommand):
         except Exception as e:
             print(e)
 
-# class Custom(sublime_plugin.TextCommand):
-#     def run (self,edit):
-#         try:
-
-#             for sel in self.view.sel():
-#                 input = self.view.substr(sel).strip()
-#                 input = fixUniCode(input)
-#                 input = xmltodict.parse(input)
-#                 print(input)
-
-
-#             # self.view.replace(edit,sel, printPage)
-#         except Exception as e:
-#             print(e)
 
 # class Custom(sublime_plugin.TextCommand):
 #     def run (self,edit):

@@ -1,0 +1,92 @@
+[   { 
+        "keys": ["ctrl+f1"], "command": "make_survey", 
+    },
+    { 
+        "keys": ["ctrl+r"], "command": "make_radio", 
+    },
+    { 
+        "keys": ["ctrl+shift+r"], "command": "make_rating", 
+    },
+    { 
+        "keys": ["ctrl+shift+c"], "command": "make_checkbox", 
+    },
+    { 
+        "keys": ["ctrl+shift+s"], "command": "make_select", 
+    },
+    { 
+        "keys": ["ctrl+shift+t"], "command": "make_textarea", 
+    },
+    { 
+        "keys": ["ctrl+t"], "command": "make_text", 
+    },
+    { 
+        "keys": ["ctrl+n"], "command": "make_number", 
+    },
+    { 
+        "keys": ["ctrl+p"], "command": "make_pipe", 
+    },
+    { 
+        "keys": ["ctrl+f1"], "command": "make_rowr", 
+    },
+    { 
+        "keys": ["ctrl+1"], "command": "make_row", 
+    },
+    { 
+        "keys": ["ctrl+9"], "command": "make_rows_match_label", 
+    },
+    { 
+        "keys": ["ctrl+2"], "command": "make_cols", 
+    },
+    { 
+        "keys": ["ctrl+8"], "command": "make_cols_match_label", 
+    },
+    { 
+        "keys": ["ctrl+7"], "command": "make_cols_match_value", 
+    },
+    { 
+        "keys": ["ctrl+3"], "command": "make_choices", 
+    },
+    { 
+        "keys": ["ctrl+4"], "command": "make_cases", 
+    },
+    { 
+        "keys": ["ctrl+5"], "command": "make_groups", 
+    },
+    { 
+        "keys": ["ctrl+shift+h"], "command": "make_comment", 
+    },
+    { 
+        "keys": ["ctrl+shift+f12"], "command": "make_switch", 
+    },
+    { 
+        "keys": ["ctrl+alt+s"], "command": "strip", 
+    },
+    { 
+        "keys": ["ctrl+alt+i"], "command": "image_tags", 
+    },
+    { 
+        "keys": ["ctrl+alt+n"], "command": "noanswer", 
+    },
+    {
+        "keys": ["ctrl+alt+m"], "command": "custom"
+    },
+    { 
+        "keys": ["ctrl+6"], "command": "make_custom_comment", 
+    },
+    {   
+        "keys": ["shift+alt+b"], 
+        "command": "insert_snippet", 
+        "args": 
+            {
+            "name": "Packages/sublime_clips/shortcuts/BoldText.sublime-snippet"
+        } 
+    },
+    {   
+        "keys": ["shift+alt+u"], 
+        "command": "insert_snippet", 
+        "args": 
+            {
+            "name": "Packages/sublime_clips/shortcuts/UnderlineText.sublime-snippet"
+        } 
+    },
+]

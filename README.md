@@ -41,24 +41,6 @@ Placeholder.jpg -&gt; &lt;img src="[rel Placeholder.jpg]" alt="Image" class="cus
 Command: <b>MM::Reverse Order</b><br>
 Flips selected lines.
 
-Command: <b>MM::Make DCM</b><br>
-Experimental DCM maker<br>
-Select your res tags and label each with a number. 
-
-Example:<br>
-[1]<br>
-Res level 1<br>
-Res level 2<br>
-
-[2]<br>
-Res level 1<br>
-Res level 2 <br>
-Res level 3<br>
-
-You will be prompted to enter:<br>
-QuestionLabel-Number of attributes-Columns desired in dcm-Tasks(loops)-Versions<br>
-Q1-4-5-10-100
-
 Command: <b>MM::Split Question</b><br>
 Splits question based on the number of pages specified. 
 
