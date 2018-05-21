@@ -50,7 +50,7 @@ def tidyQuestionInput(input):
     return [input, label, title]
 
 def tidySurveyInput(input):
-    # input = input.encode()
+    input = unicode(input, 'utf-8')
     input = re.sub("\t+", " ", input)
     input = re.sub("\n +\n", "\n\n", input)
     funkyChars = [(chr(133),'...'),(chr(145),"'"),(chr(146),"'"),(chr(147),'"'),(chr(148),'"'),(chr(151),'--')]
@@ -472,8 +472,8 @@ class makeRadioCommand(sublime_plugin.TextCommand):
                 #test for and adjust comment for 2d question
                 if output.strip() == '':
                     printpage = printPage = """
-<radio 
-  label=\"%s\" 
+<radio
+  label=\"%s\"
   where="execute">
   <title>%s</title>
   <row label="r1" value="1">True</row>
@@ -1322,7 +1322,7 @@ class makeLoopBlockCommand(sublime_plugin.TextCommand):
 <loop
   label=""
   vars="">
-  
+
 <block
   label="">
 
