@@ -50,7 +50,8 @@ def tidyQuestionInput(input):
     return [input, label, title]
 
 def tidySurveyInput(input):
-    input = unicode(input, 'utf-8')
+    # Python 3 doesn't support string decoding
+    # input = unicode(input, 'utf-8')
     input = re.sub("\t+", " ", input)
     input = re.sub("\n +\n", "\n\n", input)
     funkyChars = [(chr(133),'...'),(chr(145),"'"),(chr(146),"'"),(chr(147),'"'),(chr(148),'"'),(chr(151),'--')]
@@ -67,17 +68,18 @@ def newSurvey():
     alt=""
     autosave="0"
     extraVariables="source,list,url,record,ipAddress,userAgent,decLang"
-    compat="132"
+    compat="146"
     builderCompatible="1"
-    secure="0"
+    ss:enableNavigation="0"
+    secure="1"
     setup="time,term,quota,decLang"
     ss:disableBackButton="1"
     mobile="compat"
     mobileDevices="smartphone,tablet,featurephone,desktop"
     state="testing">
 
-    <samplesources default="0">
-      <samplesource list="0" title="default">
+    <samplesources default="1">
+      <samplesource list="1" title="default">
         <exit cond="qualified"><b>Thanks again for completing the survey!<br/><br/>Your feedback and quick response to this survey are greatly appreciated.</b></exit>
         <exit cond="terminated"><b>Thank you for your input!</b></exit>
         <exit cond="overquota"><b>Thank you for your input!</b></exit>
